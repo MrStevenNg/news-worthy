@@ -1,7 +1,15 @@
 var express = require("express");
+
+var router = express.Router();
+
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var exphbs = require("express-handlebars");
+
 // const assert = require("assert");
+
+
+
 
 // Our scraping tools
 // Axios is a promised-based http library, similar to jQuery's Ajax method
@@ -16,6 +24,10 @@ var PORT = 3000;
 
 // Initialize Express
 var app = express();
+
+// Set Handlebars.
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 
 // Configure middleware
 
@@ -74,11 +86,18 @@ app.get("/scrape", function(req, res) {
 
 
 // Route for getting all Articles from the db
-app.get("/articles", function(req, res) {
+app.get("/", function(req, res) {
   // TODO: Finish the route so it grabs all of the articles
   db.Article.find({})
   .then(function(dbArticle) {
-    res.json(dbArticle);
+    console.log(dbArticle);
+
+    const dbObj = {
+      dbArticle: dbArticle
+
+    }
+
+    res.render("index", dbObj);
   })
   .catch(function(err) {
     res.json(err);
