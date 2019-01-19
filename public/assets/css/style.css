@@ -1,0 +1,17 @@
+h2 {
+    cursor: pointer;
+}
+
+h2:hover {
+    background-color: rgba(80,80,80,.5);
+}
+
+.create-note {
+    max-width: 50%;
+    position: fixed;
+    top: 8.4%;
+}
+
+.notes {
+    overflow: auto;
+}

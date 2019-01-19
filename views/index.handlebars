@@ -1,0 +1,23 @@
+<main class="container">
+
+<h1 class="ml-3">News-Worthy (Local News Commentary)</h1>
+
+{{!-- left column (articles) --}}
+<div class="row mr-0 mb-3">
+  <div class="col pr-0 mr-0">
+    {{#each dbArticle}}
+        <div class="article border border-dark rounded p-3 mr-2">
+        <h2 class="p-2" data-id={{_id}}>{{title}} ({{date}})</h2>
+        <p><em>{{summary}}</em></p>
+        <a href="{{link}}" alt="{{title}}">{{link}}</a>
+        </div>
+    {{/each}}
+  </div>
+
+{{!-- right column (Notes) --}}
+  <div class="row col px-0 mx-0">
+    {{> notes/note-block}}
+  </div>
+</div>
+
+</main>
