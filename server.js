@@ -8,9 +8,6 @@ var exphbs = require("express-handlebars");
 
 // const assert = require("assert");
 
-
-
-
 // Our scraping tools
 // Axios is a promised-based http library, similar to jQuery's Ajax method
 // It works on the client and on the server
@@ -69,7 +66,7 @@ app.get("/", function(req, res) {
     // console.log(result);
 
       // Create a new Article using the `result` object built from scraping
-      db.Article.create(result)
+      db.Article.create(result, {unique: true})
         .then(function(dbArticle) {
           
           const dbObj = {
@@ -131,6 +128,17 @@ app.post("/articles/:id", function(req, res) {
       res.json(err);
     });
   });
+  
+  app.delete("/note/:id", function(req,res) {
+    db.Note.findByIdAndDelete(req.params.id)
+    .then(function(dbNote) {
+      res.json(dbNote);
+    }).catch(function(err) {
+      res.json(err);
+    });
+  
+    });
+
 
 // Start the server
 app.listen(PORT, function() {

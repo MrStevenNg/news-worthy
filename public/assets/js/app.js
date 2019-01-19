@@ -75,12 +75,16 @@ $(document).on("click", "#post-comment", function() {
       })
       .then(function(data) {
 
-          // console.log(data);
+          console.log(data);
 
-          let newComment = "<li>" + data.body + "</li>"
+          if (data._id !== null) {
+            let newComment = "<li class='del' data-id='" + data._id + "'>" + data.body + "</li>";
 
-          // Place the comment in the div with the class of .notes
-          $(".notes").append(newComment);
+            // Place the comment in the div with the class of .notes
+            $(".notes").append(newComment);
+          }
+          
+
 
       });
       ////////////////////////////////////////
@@ -93,6 +97,20 @@ $(document).on("click", "#post-comment", function() {
       $("#comment").val("");
     });
   }
+});
+
+$(document).on("click", ".del", function(event) {
+  // Get the ID from the corresponding button's data attribute
+  let thisId = $(this).data("id");
+  $(this).remove();
+  // AJAX call to send the DELETE request.
+  $.ajax("/note/" + thisId, {
+      type: "DELETE"
+  // Promise.
+  }).then(function(data) {
+      console.log("deleted id#" + data._id);
+
+  });
 });
 
 function ajaxLoop(data) {
@@ -109,7 +127,7 @@ function ajaxLoop(data) {
 
         // console.log(data);
 
-        let newComment = "<li>" + data.body + "</li>"
+        let newComment = "<li class='del' data-id='" + data._id + "'>" + data.body + "</li>";
 
         // Place the comment in the div with the class of .notes
         $(".notes").append(newComment);
