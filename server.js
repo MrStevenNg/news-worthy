@@ -69,7 +69,7 @@ app.get("/", function(req, res) {
     // console.log(result);
 
       // Create a new Article using the `result` object built from scraping
-      db.Article.create(result)
+      db.Article.create(result, { unique: true })
         .then(function(dbArticle) {
           
           const dbObj = {
@@ -119,7 +119,6 @@ app.post("/articles/:id", function(req, res) {
   // and update it's "note" property with the _id of the new note
   db.Note.create(req.body)
     .then(function(dbNote) {
-      console.log("this is something: " + dbNote);
       // console.log("This is the id: " + req.params.id);
       return db.Article.findOneAndUpdate(
         { _id: req.params.id }, 
