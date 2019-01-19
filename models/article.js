@@ -10,7 +10,6 @@ var ArticleSchema = new Schema({
   title: {
     type: String,
     required: true,
-    // unique: true
   },
   summary: {
     type: String,
