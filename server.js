@@ -45,7 +45,7 @@ mongoose.connect("mongodb://localhost/news-worthy", { useNewUrlParser: true });
 // Routes
 
 // A GET route for scraping the dailyrepublic website
-app.get("/scrape", function(req, res) {
+app.get("/", function(req, res) {
   // First, we grab the body of the html with axios
   axios.get("https://www.dailyrepublic.com/all-dr-news/solano-news/").then(function(response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
@@ -71,36 +71,26 @@ app.get("/scrape", function(req, res) {
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
         .then(function(dbArticle) {
-          // View the added result in the console
-          console.log(dbArticle);
+          
+          const dbObj = {
+            dbArticle: dbArticle
+          }
+
+          res.render("index", dbObj);
+
         })
         .catch(function(err) {
           // If an error occurred, log it
           console.log(err);
         });
     });
-
-    // Send a message to the client
-    res.send("Scrape Complete");
   });
 
-
-// Route for getting all Articles from the db
-app.get("/", function(req, res) {
-  // TODO: Finish the route so it grabs all of the articles
-  db.Article.find({})
-  .then(function(dbArticle) {
-    console.log(dbArticle);
-
-    const dbObj = {
-      dbArticle: dbArticle
-
-    }
-
-    res.render("index", dbObj);
-  })
-  .catch(function(err) {
-    res.json(err);
+// Route for grabbing a specific Note by id to display on the DOM.
+app.get("/notes/:id", function(req, res) {
+  db.Note.findById(req.params.id)
+  .then(function(dbNote) {
+    res.json(dbNote);
   });
 });
 
@@ -129,9 +119,11 @@ app.post("/articles/:id", function(req, res) {
   // and update it's "note" property with the _id of the new note
   db.Note.create(req.body)
     .then(function(dbNote) {
-      // console.log("this is something: " + dbNote);
+      console.log("this is something: " + dbNote);
       // console.log("This is the id: " + req.params.id);
-      return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+      return db.Article.findOneAndUpdate(
+        { _id: req.params.id }, 
+        {$addToSet: {note: dbNote}}, { new: true });
     })
     .then(function(dbArticle) {
       res.json(dbArticle);
@@ -139,9 +131,9 @@ app.post("/articles/:id", function(req, res) {
     .catch(function(err) {
       res.json(err);
     });
-});
+  });
 
 // Start the server
 app.listen(PORT, function() {
-  console.log("App running on port " + PORT + "!");
+  console.log("App running on port " + PORT + "! \n http://localhost:3000");
 });
