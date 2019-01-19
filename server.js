@@ -86,6 +86,14 @@ app.get("/", function(req, res) {
     });
   });
 
+// Route for grabbing a specific Note by id to display on the DOM.
+app.get("/notes/:id", function(req, res) {
+  db.Note.findById(req.params.id)
+  .then(function(dbNote) {
+    res.json(dbNote);
+  });
+});
+
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/articles/:id", function(req, res) {
   // TODO
@@ -111,9 +119,11 @@ app.post("/articles/:id", function(req, res) {
   // and update it's "note" property with the _id of the new note
   db.Note.create(req.body)
     .then(function(dbNote) {
-      // console.log("this is something: " + dbNote);
+      console.log("this is something: " + dbNote);
       // console.log("This is the id: " + req.params.id);
-      return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+      return db.Article.findOneAndUpdate(
+        { _id: req.params.id }, 
+        {$addToSet: {note: dbNote}}, { new: true });
     })
     .then(function(dbArticle) {
       res.json(dbArticle);
@@ -121,7 +131,7 @@ app.post("/articles/:id", function(req, res) {
     .catch(function(err) {
       res.json(err);
     });
-});
+  });
 
 // Start the server
 app.listen(PORT, function() {

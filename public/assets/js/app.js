@@ -19,27 +19,20 @@ $(document).on("click", "h2", function() {
       inputForm += "<em><a href = '" + data.link + "' alt='" + data.title + "'>" + data.link + "</a></em><br><br>"
       inputForm += "<div class='form-group'>";
       inputForm += "<label for='comment'>Comment:</label>";
-      inputForm += "<textarea class='form-control' rows='1' id='comment'></textarea>";
+      inputForm += "<textarea class='form-control' rows='1' id='comment' name='body'></textarea>";
       inputForm += "</div>";
       inputForm += "<button class='btn btn-primary rounded' data-id='" + data._id + "' id='post-comment'>Post Comment</button>";
 
       // Append the above HTML into the div with the class of .create-note
       $(".create-note").append(inputForm);
 
-      // If there's a note in the article
-      if (data.note) {
+      let inputComments = "<br><hr><br><br><p>Posted Comments:</p>";
+      inputComments += "<div>";
+      inputComments += "<ol class='notes'></ol></div>";
 
-        let inputComments = "<br><hr><br><br><p>Posted Comments:</p>";
-        inputComments += "<div class='notes border border-dark rounded p-5'>";
-        inputComments += "</div>";
+      $(".create-note").append(inputComments);
 
-        $(".create-note").append(inputComments);
-
-        // Place the comment in the div with the class of .notes
-        $(".notes").val(data.note.body);
-      }
-
-    });
+      });
 });
 
 // When you click on the button with an ID of #post-comment
@@ -53,14 +46,31 @@ $(document).on("click", "#post-comment", function() {
     url: "/articles/" + thisId,
     data: {
       // Value taken from comment textarea
-      comment: $("#comment").val()
+      body: $("#comment").val()
     }
   })
     // With that done
     .then(function(data) {
       // Log the response
       console.log(data);
+
+      // SECOND AJAX CALL TO /notes //////////
+      $.ajax({
+        method: "GET",
+        url: "/notes/" + data.note
+      })
+      .then(function(data) {
+
+          console.log(data);
+
+          let newComment = "<li>" + data.body + "</li>"
+
+          // Place the comment in the div with the class of .notes
+          $(".notes").append(newComment);
+
+      });
+
       // Empty the comment textarea
-      $("#comment").empty();
+      $("#comment").val("");
     });
 });
