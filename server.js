@@ -8,9 +8,6 @@ var exphbs = require("express-handlebars");
 
 // const assert = require("assert");
 
-
-
-
 // Our scraping tools
 // Axios is a promised-based http library, similar to jQuery's Ajax method
 // It works on the client and on the server
@@ -66,25 +63,30 @@ app.get("/", function(req, res) {
       });
     });
 
-    // console.log(result);
-
-      // Create a new Article using the `result` object built from scraping
-      db.Article.create(result)
-        .then(function(dbArticle) {
-          
-          const dbObj = {
-            dbArticle: dbArticle
-          }
-
-          res.render("index", dbObj);
-
-        })
-        .catch(function(err) {
-          // If an error occurred, log it
-          console.log(err);
-        });
-    });
+result.forEach(resArticle => {
+  db.Article.find({ title: resArticle.title}, function (err, article) {
+    if(article.length === 0) {
+      // no articles found
+      console.log("no articles found save it to the database");
+            db.Article.create(resArticle)
+      .catch(function(err) {
+        // If an error occurred, log it
+        console.log(err);
+      });
+    } else {
+      console.log('article found , dont save to database');
+    }
   });
+}); // loop over each element in result
+    }); // end of axios call
+    //render at the end
+    db.Article.find({}, function(err, dbArticles) {
+      const dbObj = {
+        dbArticle: dbArticles
+      }
+      res.render("index", dbObj);
+    })
+  }); //end of app.get
 
 // Route for grabbing a specific Note by id to display on the DOM.
 app.get("/notes/:id", function(req, res) {
@@ -131,6 +133,17 @@ app.post("/articles/:id", function(req, res) {
       res.json(err);
     });
   });
+  
+  app.delete("/note/:id", function(req,res) {
+    db.Note.findByIdAndDelete(req.params.id)
+    .then(function(dbNote) {
+      res.json(dbNote);
+    }).catch(function(err) {
+      res.json(err);
+    });
+  
+    });
+
 
 // Start the server
 app.listen(PORT, function() {

@@ -1,8 +1,9 @@
-h2 {
+h2, li {
     cursor: pointer;
 }
 
-h2:hover {
+h2:hover,
+li:hover {
     background-color: rgba(80,80,80,.5);
 }
 
