@@ -75,7 +75,7 @@ $(document).on("click", "#post-comment", function () {
             })
             .then(function (data) {
 
-              console.log(data);
+              // console.log(data);
 
               if (data._id !== null) {
                 let newComment = "<li class='del' data-id='" + data._id + "'>" + data.body + "</li>";
@@ -108,7 +108,7 @@ $(document).on("click", ".del", function (event) {
     type: "DELETE"
     // Promise.
   }).then(function (data) {
-    console.log("deleted id#" + data._id);
+    // console.log("deleted id#" + data._id);
 
   });
 });
