@@ -1,5 +1,5 @@
 // Whenever someone clicks a h2 tag
-$(document).on("click", "h2", function() {
+$(document).on("click", "h2", function () {
   // Empty the notes from the note section
   $(".create-note").empty();
   // Save the id from the p tag
@@ -7,11 +7,11 @@ $(document).on("click", "h2", function() {
 
   // Now make an ajax call for the Article
   $.ajax({
-    method: "GET",
-    url: "/articles/" + thisId
-  })
+      method: "GET",
+      url: "/articles/" + thisId
+    })
     // With that done, add the note information to the page
-    .then(function(data) {
+    .then(function (data) {
       // console.log(data);
 
       let inputForm = "<h2>" + data.title + "</h2>";
@@ -34,81 +34,81 @@ $(document).on("click", "h2", function() {
 
       ajaxLoop(data);
 
-      });
+    });
 
 });
 
 // When you click on the button with an ID of #post-comment
-$(document).on("click", "#post-comment", function() {
+$(document).on("click", "#post-comment", function () {
 
   const commentText = $("#comment").val();
   // IF, #comment != "" THEN, ELSE do nothing.
   if (commentText !== "") {
-  
-  // Grab the id associated with the article from the submit button
-  var thisId = $(this).attr("data-id");
 
-  // Clear .notes to prevent repeat data being displayed.
-  $(".notes").empty();
+    // Grab the id associated with the article from the submit button
+    var thisId = $(this).attr("data-id");
 
-  // Run a POST request to change the note, using what's entered in the inputs
-  $.ajax({
-    method: "POST",
-    url: "/articles/" + thisId,
-    data: {
-      // Value taken from comment textarea
-      body: $("#comment").val()
-    }
-  })
-    // With that done
-    .then(function(data) {
-      // Log the response
-      // console.log(data);
+    // Clear .notes to prevent repeat data being displayed.
+    $(".notes").empty();
 
-      //for-loop to append all comments(notes)
-      for (let i = 0; i < data.note.length; i++) {
-
-      // SECOND AJAX CALL TO /notes //////////
-      $.ajax({
-        method: "GET",
-        url: "/notes/" + data.note[i]
+    // Run a POST request to change the note, using what's entered in the inputs
+    $.ajax({
+        method: "POST",
+        url: "/articles/" + thisId,
+        data: {
+          // Value taken from comment textarea
+          body: $("#comment").val()
+        }
       })
-      .then(function(data) {
+      // With that done
+      .then(function (data) {
+        // Log the response
+        // console.log(data);
 
-          console.log(data);
+        //for-loop to append all comments(notes)
+        for (let i = 0; i < data.note.length; i++) {
 
-          if (data._id !== null) {
-            let newComment = "<li class='del' data-id='" + data._id + "'>" + data.body + "</li>";
+          // SECOND AJAX CALL TO /notes //////////
+          $.ajax({
+              method: "GET",
+              url: "/notes/" + data.note[i]
+            })
+            .then(function (data) {
 
-            // Place the comment in the div with the class of .notes
-            $(".notes").append(newComment);
-          }
-          
+              console.log(data);
+
+              if (data._id !== null) {
+                let newComment = "<li class='del' data-id='" + data._id + "'>" + data.body + "</li>";
+
+                // Place the comment in the div with the class of .notes
+                $(".notes").append(newComment);
+              }
 
 
+
+            });
+          ////////////////////////////////////////
+
+        }
+
+
+
+        // Empty the comment textarea
+        $("#comment").val("");
       });
-      ////////////////////////////////////////
-
-      }
-
-
-
-      // Empty the comment textarea
-      $("#comment").val("");
-    });
   }
 });
 
-$(document).on("click", ".del", function(event) {
+$(document).on("click", ".del", function (event) {
   // Get the ID from the corresponding button's data attribute
   let thisId = $(this).data("id");
   $(this).remove();
   // AJAX call to send the DELETE request.
   $.ajax("/note/" + thisId, {
-      type: "DELETE"
-  // Promise.
-  }).then(function(data) {
-      console.log("deleted id#" + data._id);
+    type: "DELETE"
+    // Promise.
+  }).then(function (data) {
+    console.log("deleted id#" + data._id);
 
   });
 });
@@ -120,10 +120,10 @@ function ajaxLoop(data) {
 
     // SECOND AJAX CALL TO /notes //////////
     $.ajax({
-      method: "GET",
-      url: "/notes/" + data.note[i]._id
-    })
-    .then(function(data) {
+        method: "GET",
+        url: "/notes/" + data.note[i]._id
+      })
+      .then(function (data) {
 
         // console.log(data);
 
@@ -132,9 +132,9 @@ function ajaxLoop(data) {
         // Place the comment in the div with the class of .notes
         $(".notes").append(newComment);
 
-    });
+      });
     ////////////////////////////////////////
 
-    }
+  }
 
 }
