@@ -39,7 +39,7 @@ app.use(express.static("public"));
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 let MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/news-worthy";
 
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(MONGODB_URI);
 
 // Routes
 
