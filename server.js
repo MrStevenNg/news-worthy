@@ -1,7 +1,4 @@
 var express = require("express");
-
-var router = express.Router();
-
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var exphbs = require("express-handlebars");
@@ -42,7 +39,7 @@ app.use(express.static("public"));
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/news-worthy";
 
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+mongoose.connect(MONGODB_URI);
 
 // Routes
 
