@@ -67,14 +67,14 @@ result.forEach(resArticle => {
   db.Article.find({ title: resArticle.title}, function (err, article) {
     if(article.length === 0) {
       // no articles found
-      console.log("no articles found save it to the database");
+      // console.log("no articles found save it to the database");
             db.Article.create(resArticle)
       .catch(function(err) {
         // If an error occurred, log it
         console.log(err);
       });
     } else {
-      console.log('article found , dont save to database');
+      // console.log('article found , dont save to database');
     }
   });
 }); // loop over each element in result
